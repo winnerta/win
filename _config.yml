@@ -1,0 +1,5 @@
+title: "win"
+description: "وصف مختصر للموقع الخاص بك"
+baseurl: ""
+url: "https://github.com/winnerta/win.git"  # استبدل بهذا الرابط
+theme: jekyll-theme-primer
